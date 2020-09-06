@@ -1,4 +1,4 @@
-import $U from '@/common/js/util.js';
+
 import $H from '@/common/js/request.js';
 import $C from '@/common/js/config.js';
 import Chat from '@/common/js/chat.js';
@@ -35,7 +35,7 @@ export default {
 		updateUser(state,{ k,v }){
 			if(state.user){
 				state.user[k] = v
-				$U.setStorage('user',JSON.stringify(state.user))
+				uni.setStorageSync('user',JSON.stringify(state.user))
 			}
 		}
 	},
@@ -43,34 +43,33 @@ export default {
 		// 登录后处理
 		login({ state,dispatch },res){
 			// 存到状态中
-			res.user.token=res.token
-			state.user = res.user
-			state.user.id = res.user.userId
+			console.log(res)
+			state.user = res
 			// 存储到本地存储中
-			$U.setStorage('token',res.token)
-			$U.setStorage('user',JSON.stringify(res.user))
-			$U.setStorage('user_id',res.user.userId)
+			uni.setStorageSync('token',res.token)
+			uni.setStorageSync('user',JSON.stringify(res))
 			// 获取好友申请列表
-			dispatch('getApply')
+			// dispatch('getApply')
 			// 连接socket
+			console.log('new chat')
 			state.chat = new Chat({
 				url:$C.socketUrl
 			})
 			// 获取会话列表
-			dispatch('getChatList')
+			// dispatch('getChatList')
 			// 初始化总未读数角标
-			dispatch('updateBadge')
+			// dispatch('updateBadge')
 			// 获取朋友圈动态通知
-			dispatch('getNotice');
+			//dispatch('getNotice');
 		},
 		// 退出登录处理
 		logout({ state }){
 			// 清除登录状态
 			state.user = false
 			// 清除本地存储数据
-			$U.removeStorage('token');
-			$U.removeStorage('user');
-			$U.removeStorage('user_id');
+			uni.removeStorageSync('token');
+			uni.removeStorageSync('user');
+			uni.removeStorageSync('user_id');
 			// 关闭socket连接
 			if(state.chat){
 				state.chat.close()
@@ -88,7 +87,7 @@ export default {
 		// 初始化登录状态
 		initLogin({ state,dispatch }){
 			// 拿到存储
-			let user = $U.getStorage('user')
+			let user = uni.getStorageSync('user')
 			if(user){
 				// 初始化登录状态
 				state.user = JSON.parse(user)
@@ -100,11 +99,11 @@ export default {
 				dispatch('getChatList')
 				// 获取离线信息
 				// 获取好友申请列表
-				dispatch('getApply')
+				// dispatch('getApply')
 				// 初始化总未读数角标
-				dispatch('updateBadge')
+				// dispatch('updateBadge')
 				// 获取朋友圈动态通知
-				dispatch('getNotice');
+				// dispatch('getNotice');
 			}
 		},
 		// 获取好友申请列表
@@ -154,8 +153,8 @@ export default {
 			})
 		},
 		// 获取通讯录列表
-		getMailList({ state }){
-			$H.get('/app/imfriend/list').then(res=>{
+		getFriendList({ state }){
+			$H.get('/friend/list').then(res=>{
 				if(res.code==0){
 					let list = []
 					for(var key in res.data){
@@ -169,9 +168,6 @@ export default {
 					state.mailList = list ? list : [],
 					console.log(list);
 				}
-				
-				
-				
 			})
 		},
 		// 获取会话列表

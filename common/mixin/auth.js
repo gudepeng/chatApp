@@ -1,7 +1,6 @@
-import $U from '@/common/js/util.js';
 export default {
 	onShow() {
-		let token = $U.getStorage('token')
+		let token = uni.getStorageSync('token')
 		if(!token){
 			return uni.reLaunch({
 				url:"/pages/common/login/login"

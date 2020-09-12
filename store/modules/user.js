@@ -106,6 +106,24 @@ export default {
 				// dispatch('getNotice');
 			}
 		},
+		// 获取通讯录列表
+		getMailList({ state }){
+			$H.get('/friend/list').then(res=>{
+				if(res.code==0){
+					let list = []
+					for(var key in res.data){
+						let data = {
+							title:  key,
+							list: res.data[key]
+						}
+					  console.log("属性：" + key + ",值：" +  res.data[key]);
+					  list.push(data)
+					}
+					state.mailList = list ? list : [],
+					console.log(list);
+				}
+			})
+		},
 		// 获取好友申请列表
 		getApply({state,dispatch},page = 1){
 			$H.post('/app/imapply/list?page='+page,{friendId:state.user.id}).then(res=>{

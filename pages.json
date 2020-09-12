@@ -28,13 +28,13 @@
 				"iconPath":"static/tabbar/index.png",
 				"selectedIconPath":"static/tabbar/index-select.png",
 				"pagePath":"pages/tabbar/chat/index",
-				"text":"纸条"
+				"text":"对话"
 			},
 			{
 				"iconPath":"static/tabbar/index.png",
 				"selectedIconPath":"static/tabbar/index-select.png",
-				"pagePath":"pages/tabbar/chat/index",
-				"text":"纸条1"
+				"pagePath":"pages/friend/friend",
+				"text":"朋友"
 			}
 		]
 	},

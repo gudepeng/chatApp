@@ -1,0 +1,98 @@
+<template>
+	<view>
+		<view>
+			<view class="flex align-center justify-center"
+			style="height: 350rpx;">
+			<image src="http://qiniu.doctorfss.com/upload/20200526/6417f9fb2a8c4aabad0ff04ff4986634.png" style="width: 120rpx;height: 120rpx;" class="bg-secondary rounded position-absolute bottom-0"></image>
+				<!-- <text style="font-size: 50rpx;">YOU-LOGO</text> -->
+			</view>
+			<view class="px-3">
+				<input type="text" class="bg-light px-3 mb-3 font" placeholder="请输入用户名" style="height: 100rpx;" v-model="form.username"/>
+				<input type="password" class="bg-light px-3 mb-3 font" placeholder="请输入密码" style="height: 100rpx;" v-model="form.password"/>
+				<input v-if="type === 'reg'" type="password" class="bg-light px-3 mb-3 font" placeholder="请输入确认密码" style="height: 100rpx;"  v-model="form.repassword"/>
+			</view>
+			<view class="p-3 flex align-center justify-center">
+				<view class="main-bg-color rounded p-3 flex align-center justify-center flex-1"
+				hover-class="main-bg-hover-color" @click="submit">
+					<text class="text-white font-md">{{type === 'login' ? '登 录' : '注 册'}}</text>
+				</view>
+			</view>
+			
+			<view class="flex align-center justify-center">
+				<text class="text-light-muted font p-2" @click="changeType">{{type === 'login' ?  '注册账号' : '马上登录'}}</text>
+				<text class="text-light-muted font">|</text>
+				<text class="text-light-muted font p-2">忘记密码</text>
+			</view>
+		</view>
+		
+	</view>
+</template>
+
+<script>
+	import $H from '@/common/js/request.js';
+	export default {
+		data() {
+			return {
+				type:"login",
+				form:{
+					username:"",
+					password:"",
+					repassword:""
+				}
+			}
+		},
+		created() {
+			let token = uni.getStorageSync('token')
+			
+			if(!token){
+				// 用户未登录
+				uni.showToast({ title: '请先登录', icon: 'none' });
+				return this.show = true
+			}
+			console.log(token)
+			// 用户已登录
+			uni.switchTab({
+				url:"/pages/tabbar/chat/index"
+			})
+		},
+		methods: {
+			changeType(){
+				this.type = this.type === 'login' ? 'reg' : 'login'
+				this.form = {
+					username:"",
+					password:"",
+					repassword:""
+				}
+			},
+			submit(){
+				$H.post('/user/'+this.type,{username:this.form.username,password:this.form.password,repassword:this.form.repassword},{
+					token:false
+				}).then(res=>{
+					// 登录
+					console.log(res)
+					if(this.type === 'login'){
+						console.log(this.type)
+						this.$store.dispatch('login',res)
+						uni.showToast({
+							title: '登录成功',
+							icon: 'none'
+						});
+						return uni.switchTab({
+							url:"/pages/tabbar/chat/index"
+						})
+					}
+					// 注册
+					this.changeType()
+					uni.showToast({
+						title: '注册成功，去登陆',
+						icon: 'none'
+					});
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>

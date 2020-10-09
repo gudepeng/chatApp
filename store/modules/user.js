@@ -13,7 +13,7 @@ export default {
 		
 		mailList:[],
 		
-		chat:null,
+		chat:{isOnline:true},
 		
 		// 会话列表
 		chatList:[],
@@ -43,20 +43,20 @@ export default {
 		// 登录后处理
 		login({ state,dispatch },res){
 			// 存到状态中
-			console.log(res)
-			state.user = res
+			state.user = res.data
 			// 存储到本地存储中
-			uni.setStorageSync('token',res.token)
-			uni.setStorageSync('user',JSON.stringify(res))
+			uni.setStorageSync('token',res.data.token)
+			uni.setStorageSync('user',JSON.stringify(res.data))
 			// 获取好友申请列表
 			// dispatch('getApply')
 			// 连接socket
 			console.log('new chat')
-			state.chat = new Chat({
-				url:$C.socketUrl
-			})
+			//@yyz先不启用
+			// state.chat = new Chat({
+			// 	url:$C.socketUrl
+			// })
 			// 获取会话列表
-			// dispatch('getChatList')
+			dispatch('getChatList')
 			// 初始化总未读数角标
 			// dispatch('updateBadge')
 			// 获取朋友圈动态通知
@@ -190,11 +190,19 @@ export default {
 		},
 		// 获取会话列表
 		getChatList({ state }){
-			state.chatList = state.chat.getChatList()
-			// 监听会话列表变化
-			uni.$on('onUpdateChatList',(list)=>{
-				state.chatList = list
+			$H.get('/user/getChatList',{},{
+				token:true
+			}).then(res=>{
+				// 登录
+				console.log('获取会话列表')
+				console.log(res.data)
+				state.chatList = res.data
 			})
+			// state.chatList = state.chat.getChatList()
+			// 监听会话列表变化
+			// uni.$on('onUpdateChatList',(list)=>{
+			// 	state.chatList = list
+			// })
 		},
 		// 获取朋友圈动态通知
 		getNotice({ state }){

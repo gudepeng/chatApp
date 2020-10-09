@@ -51,9 +51,9 @@
 			}
 			console.log(token)
 			// 用户已登录
-			uni.switchTab({
-				url:"/pages/tabbar/chat/index"
-			})
+			// uni.switchTab({
+			// 	url:"/pages/tabbar/chat/index"
+			// })
 		},
 		methods: {
 			changeType(){
@@ -65,11 +65,10 @@
 				}
 			},
 			submit(){
-				$H.post('/user/'+this.type,{username:this.form.username,password:this.form.password,repassword:this.form.repassword},{
+				$H.get('/user/'+this.type,{username:this.form.username,password:this.form.password,repassword:this.form.repassword},{
 					token:false
 				}).then(res=>{
 					// 登录
-					console.log(res)
 					if(this.type === 'login'){
 						console.log(this.type)
 						this.$store.dispatch('login',res)

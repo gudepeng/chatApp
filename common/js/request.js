@@ -1,4 +1,5 @@
 import $C from './config.js';
+import $U from './util.js';
 import $store from '@/store/index.js';
 export default {
     // 全局配置
@@ -25,13 +26,13 @@ export default {
         // 请求之前验证...
         // token验证
         if (options.token) {
-            let token = uni.getStorageSync('token')
+            let token = $U.getStorage('token')
             // 二次验证
             if (!token) {
                 uni.showToast({ title: '请先登录', icon: 'none' });
                 // token不存在时跳转
                 return uni.reLaunch({
-                    url: '/pages/login/login',
+                    url: '/pages/common/login/login',
                 });
             }
             // 往header头中添加token
@@ -44,7 +45,6 @@ export default {
             uni.request({
                 ...options,
                 success: (result) => {
-					console.log(result);
                     // 返回原始数据
                     if(options.native){
                         return res(result)
@@ -64,7 +64,7 @@ export default {
                         return rej(result.data) 
                     }
                     // 其他验证...
-					if(result.data.code!=1){
+					if(result.data.code!=0){
 						if(result.data.msg!=''){
 							uni.showToast({
 								title: result.data.msg,
@@ -75,7 +75,7 @@ export default {
 					}
                     // 成功
                     let data = result.data
-                    res(data.data)
+                    res(data)
                 },
                 fail: (error) => {
                     uni.showToast({ title: error.errMsg || '请求失败', icon: 'none' });
@@ -109,7 +109,7 @@ export default {
 	upload(url,data,onProgress = false){
 		return new Promise((result,reject)=>{
 			// 上传
-			let token = uni.getStorageSync('token')
+			let token = $U.getStorage('token')
 			if (!token) {
 			    uni.showToast({ title: '请先登录', icon: 'none' });
 			    // token不存在时跳转

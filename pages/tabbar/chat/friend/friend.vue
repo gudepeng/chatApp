@@ -1,27 +1,22 @@
 <template>
-	<view class="content">
-		11111
+	<view>
+		朋友页面
 	</view>
 </template>
 
 <script>
-	import auth from '@/common/mixin/auth.js';
 	export default {
-		mixins:[auth],
 		data() {
 			return {
-				title: 'Hello'
+				
 			}
 		},
-		onLoad() {
-		
-		},
 		methods: {
-
+			
 		}
 	}
 </script>
 
 <style>
-	
+
 </style>

@@ -1,3 +1,4 @@
+import $U from './util.js';
 import $H from './request.js';
 import $store from '@/store/index.js';
 class chat {
@@ -9,8 +10,7 @@ class chat {
 		this.reconnectTime = 0
 		this.isOpenReconnect = true
 		// 获取当前用户相关信息
-		let user = uni.getStorageSync('user')
-		console.log(user)
+		let user = $U.getStorage('user')
 		this.user = user ? JSON.parse(user) : {},
 		// 初始化聊天对象
 		this.TO = false;
@@ -34,9 +34,8 @@ class chat {
 	}
 	// 连接socket
 	connectSocket(){
-		console.log('connectSocket')
 		this.socket = uni.connectSocket({
-			url:this.url,
+			url:this.url+"?id="+this.user.userId,
 			complete: ()=> {}
 		})
 		// 监听连接成功
@@ -62,16 +61,21 @@ class chat {
 	// 监听打开
 	onOpen(){
 		console.log(123)
-		this.sendMessage(JSON.stringify({type: 0,data:{id:1,token:111}}))
 		// 用户上线
 		this.isOnline = true
 		console.log('socket连接成功')
+		// this.reconnectTime = 0
 		this.isOpenReconnect = true
+		// 获取用户离线消息
+		this.getMessage()
+		//
+		//this.socket.send('{"code":1}');
 		//心跳
 		this.timer = setInterval(() => {
+			
 			if(this.socket!=null){
 				this.socket.send({
-					data:JSON.stringify({type:2,data:{}}),
+					data:JSON.stringify({code:0,message:{}}),
 					success() {
 						console.log('心跳发送成功success')
 					},
@@ -82,7 +86,10 @@ class chat {
 			}
 		}, 15000);
 	}
-
+	// 获取离线消息
+	getMessage(){
+		$H.post('/app/message/getmessage')
+	}
 	// 监听关闭
 	onClose(){
 		// 用户下线
@@ -101,22 +108,65 @@ class chat {
 		this.isOnline = false
 		this.socket = null
 		console.log('socket连接错误')
+		//this.connectSocket()
+		/* uni.onNetworkStatusChange(res => {
+			console.log(res.isConnected)
+			if(res.isConnected){
+				this.reconnect()
+			};
+		}); */
 	}
 	// 监听接收消息
 	onMessage(data){
-		let res = JSON.parse(data)
+		let res = JSON.parse(data.data)
+		//心跳
+		if(res.code==0){
+			return
+		}
 		console.log('监听接收消息',res)
 		// 错误
 		switch (res.msg){
-			case 'sendmsg': 
-				// 处理消息
-				this.handleOnMessage(res.message)
+			case 'fail':
+			return uni.showToast({
+				title: res.data,
+				icon: 'none'
+			});
+				break;
+			case 'recall': // 撤回消息
+			//撤回  自己发的  return
+			if(res.code==2){
+				if(res.message.from_id==this.user.userId){
+					return
+				}
+			}
+			this.handleOnRecall(res.message)
+				break;
+			case 'updateApplyList': // 新的好友申请
+			console.log('updateApplyList')
+			$store.dispatch('getApply');
+				break;
+			case 'moment': // 朋友圈更新
+			this.handleMoment(res.message)
+				break;
+			default:
+			//群聊  自己发的  return
+			if(res.code==2){
+				if(res.message.type =='system'){
+					
+				}else{
+					if(res.message.from_id==this.user.userId){
+						return
+					}
+				}
+			}
+			// 处理消息
+			this.handleOnMessage(res.message)
 				break;
 		}
 	}
 	// 获取本地存储中的朋友圈动态通知
 	getNotice(){
-		let notice = uni.getStorageSync('moment_'+this.user.id)
+		let notice = $U.getStorage('moment_'+this.user.id)
 		return notice ? JSON.parse(notice) : {
 			avatar:"",
 			user_id:0,
@@ -155,7 +205,7 @@ class chat {
 				break;
 		}
 		uni.$emit('momentNotice',notice)
-		uni.setStorageSync('moment_'+this.user.id,JSON.stringify(notice))
+		$U.setStorage('moment_'+this.user.id,JSON.stringify(notice))
 	}
 	// 读取朋友圈动态
 	async readMoments(){
@@ -164,7 +214,7 @@ class chat {
 			user_id:0,
 			num:0
 		}
-		uni.setStorageSync('moment_'+this.user.id,JSON.stringify(notice))
+		$U.setStorage('moment_'+this.user.id,JSON.stringify(notice))
 		uni.hideTabBarRedDot({
 			index:2
 		})
@@ -710,7 +760,7 @@ class chat {
 	// 清空聊天记录
 	async clearChatDetail(id,chat_type){
 		let key = `chatDetail_${this.user.id}_${chat_type}_${id}`
-		uni.removeStorageSync(key)
+		$U.removeStorage(key)
 		
 		// 获取所有会话列表
 		let list = this.getChatList()
@@ -743,12 +793,12 @@ class chat {
 	}
 	// 获取存储
 	getStorage(key){
-		let list = uni.getStorageSync(key)
+		let list = $U.getStorage(key)
 		return list ? JSON.parse(list) : []
 	}
 	// 设置存储
 	setStorage(key,value){
-		return uni.setStorageSync(key,JSON.stringify(value))
+		return $U.setStorage(key,JSON.stringify(value))
 	}
 	// 数组置顶
 	listToFirst(arr,index){

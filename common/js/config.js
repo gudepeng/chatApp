@@ -12,7 +12,7 @@ export default {
     //socketUrl:"ws://wechat.dishait.cn/ws",
     socketUrl:"ws://doctorfss.com:9326",
 	
-    env:"dev",
+    env:"",
 	
 	codeUrl:"http://wechat.dishait.cn",
 	

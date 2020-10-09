@@ -16,10 +16,13 @@ export default {
 		chat:{isOnline:true},
 		
 		// 会话列表
-		chatList:[],
+		chatList:[
+	{"istop":true,"avatar":"","noreadnum":"5","name":"顾","data":"大家好","update_time":"1602256836781"},
+	{"istop":true,"avatar":"","noreadnum":"5","name":"永","data":"在吗?","update_time":"1602256836781"}
+	],
 		
 		// 总未读数
-		totalNoreadnum:0,
+		totalNoreadnum:10,
 		
 		notice:{
 			avatar:"",

@@ -77,7 +77,7 @@
 							icon: 'none'
 						});
 						return uni.switchTab({
-							url:"/pages/tabbar/chat/index"
+							url:"/pages/tabbar/index/index"
 						})
 					}
 					// 注册

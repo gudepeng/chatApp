@@ -1,7 +1,6 @@
 <template>
 	<view>
 		
-		
 		<!-- 导航栏 -->
 		<fss-nav-bar title="嗨，同学" :noreadnum="totalNoreadnum">
 		</fss-nav-bar>

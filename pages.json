@@ -16,6 +16,9 @@
 	    ,{
             "path" : "pages/tabbar/index/index",
             "style" : {}
+        } ,{
+            "path" : "pages/chat/chat/chat",
+            "style" : {}
         }
     ],
 	"globalStyle": {

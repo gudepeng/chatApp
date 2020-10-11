@@ -5,7 +5,7 @@ class chat {
 	constructor(arg) {
 		this.timer=null
 		this.url = arg.url
-		this.isOnline = false
+		this.isOnline = true
 		this.socket = null
 		this.reconnectTime = 0
 		this.isOpenReconnect = true
@@ -17,7 +17,7 @@ class chat {
 		
 		// 连接和监听
 		if(this.user.token){
-			this.connectSocket()
+			// this.connectSocket()
 		}
 	}
 	// 断线重连
@@ -502,6 +502,7 @@ class chat {
 	}
 	// 获取聊天记录
 	getChatDetail(key = false){
+		alert(key)
 		key = key ? key : `chatDetail_${this.user.id}_${this.TO.chat_type}_${this.TO.id}`
 		return this.getStorage(key)
 	}

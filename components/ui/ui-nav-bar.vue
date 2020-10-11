@@ -2,7 +2,7 @@
 	<view>
 		<view :class="getClass">
 			<!-- 状态栏 -->
-			<view :style="'height:'+statusBarHeight+'px'"></view>
+			<view :style="'height:'+ statusBarHeight +'px'"></view>
 			<!-- 导航 -->
 			<view class="w-100 flex align-center justify-between" style="height: 90rpx;">
 				<!-- 左边 -->
@@ -29,7 +29,7 @@
 			</view>
 		</view>
 		<!-- 占位 -->
-		<view v-if="fixed" :style="fixedStyle"></view>
+		<!-- <view v-if="fixed" :style="fixedStyle"></view> -->
 		
 		<!-- 扩展菜单 -->
 		<fss-popup v-if="showRight" ref="extend" :bodyWidth="320" :bodyHeight="525"

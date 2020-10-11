@@ -55,9 +55,9 @@ export default {
 			// 连接socket
 			console.log('new chat')
 			//@yyz先不启用
-			// state.chat = new Chat({
-			// 	url:$C.socketUrl
-			// })
+			state.chat = new Chat({
+				url:$C.socketUrl
+			})
 			// 获取会话列表
 			dispatch('getChatList')
 			// 初始化总未读数角标

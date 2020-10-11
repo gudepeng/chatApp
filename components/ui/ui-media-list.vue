@@ -11,7 +11,7 @@
 		<view class="flex flex-column border-bottom flex-1 py-3 pr-3 border-light-secondary">
 			<view class="flex align-center justify-between mb-1">
 				<text class="font-md">{{item.name}}</text>
-				<text class="font-sm text-light-muted">{{item.update_time|formatTime}}</text>
+				<text class="font-sm text-light-muted">{{item.update_time*1|formatTime}}</text>
 			</view>
 			<text class="font text-ellipsis text-light-muted">{{item.data}}</text>
 		</view>
@@ -52,7 +52,7 @@
 						chat_type:this.item.chat_type,
 					})),
 				});
-				this.chat.readChatItem(this.item.id,this.item.chat_type)
+				// this.chat.readChatItem(this.item.id,this.item.chat_type)
 			},
 			long(e){
 				let x = 0

@@ -4,14 +4,12 @@
 		<!-- 导航栏 -->
 		<fss-nav-bar title="嗨，同学" :noreadnum="totalNoreadnum">
 		</fss-nav-bar>
-		
 		<view class="bg-danger p-3 left-0 right-0 flex align-center justify-between" v-if="!chat || !chat.isOnline">
 			<text class="text-white font">当前处于离线状态</text>
 			<view class="border py-1 px-2 rounded" hover-class="bg-hover-danger" @click="chat.reconnectConfirm()">
 				<text class="text-white font">重新连接</text>
 			</view>
 		</view>
-		
 		<!-- 置顶列表 -->
 		<block v-for="(item,index) in list" :key="index">
 			<fss-media-list v-if="item.istop" :item="item" :index="index"
